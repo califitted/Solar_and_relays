@@ -51,8 +51,9 @@ void outletFourOn();
 void outletFourOff();
 
 // Change this before you flash
-const char* ssid = "alexa";
-const char* password = "alexa@IoT";
+// using the config params now
+//const char* ssid = "alexa";
+//const char* password = "alexa@IoT";
 
 boolean wifiConnected = false;
 
@@ -234,7 +235,7 @@ void loop() {
 
   //delay(2000);
 
-  {
+  
    if(wifiConnected){
       upnpBroadcastResponder.serverLoop();
 
@@ -337,7 +338,7 @@ boolean connectWifi(){
   int i = 0;
 
   WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
+  WiFi.begin(WIFI_SSID, WIFI_PASS);
   Serial.println("");
   Serial.println("Connecting to WiFi");
 
@@ -356,7 +357,7 @@ boolean connectWifi(){
   if (state){
     Serial.println("");
     Serial.print("Connected to ");
-    Serial.println(ssid);
+    Serial.println(WIFI_SSID);
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
   }
