@@ -17,9 +17,9 @@ Adafruit_INA219 ina219;
 Adafruit_INA219 ina219_load(0x41);
 
 // set up the 'voltage' and 'current' feeds
-//AdafruitIO_Feed *voltage = io.feed("solar.solar-panel-voltage");
-//AdafruitIO_Feed *power = io.feed("solar.solar-panel-power");
-//AdafruitIO_Feed *current = io.feed("solar.solar-panel-current");
+AdafruitIO_Feed *voltage = io.feed("solar.solar-panel-voltage");
+AdafruitIO_Feed *power = io.feed("solar.solar-panel-power");
+AdafruitIO_Feed *current = io.feed("solar.solar-panel-current");
 AdafruitIO_Feed *voltage_load = io.feed("solar.solar-panel-voltage-load");
 AdafruitIO_Feed *power_load = io.feed("solar.solar-panel-power-load");
 AdafruitIO_Feed *current_load = io.feed("solar.solar-panel-current-load");
@@ -366,6 +366,4 @@ boolean connectWifi(){
   }
 
   return state;
-}
-
 }
