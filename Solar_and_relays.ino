@@ -233,7 +233,7 @@ void loop() {
   Serial.println("");
 
 
-  //delay(2000);
+  delay(5000);
 
   
    if(wifiConnected){
