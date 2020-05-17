@@ -51,9 +51,9 @@ void outletFourOn();
 void outletFourOff();
 
 // Change this before you flash
-// using the config params now
-//const char* ssid = "alexa";
-//const char* password = "alexa@IoT";
+// from config.h
+// const char* ssid = "alexa";
+// const char* password = "alexa@IoT";
 
 boolean wifiConnected = false;
 
@@ -78,10 +78,57 @@ int relaySix = 12;
 int relaySeven = 13;
 int relayEight = 15;
 
+#define LED_BUILTIN_ESP 2
 
 void setup() {
+  
+  pinMode(LED_BUILTIN_ESP, OUTPUT);
+  
+  // start the serial connection
+  Serial.begin(115200);
+  // wait for serial monitor to open
+  while(! Serial) {
+      // will pause Zero, Leonardo, etc until serial console opens
+      delay(1);
+      // blink every second if serial not up..
+      digitalWrite(LED_BUILTIN_ESP, HIGH);   // turn the LED on (HIGH is the voltage level)
+      delay(1000);                       // wait for a second
+      digitalWrite(LED_BUILTIN_ESP, LOW);    // turn the LED off by making the voltage LOW
+      delay(1000);                       // wait for a second
+  }
+  // connect to io.adafruit.com
+  Serial.print("Connecting to Adafruit IO");
+  io.connect();
 
- Serial.begin(115200);
+  // wait for a connection
+  while(io.status() < AIO_CONNECTED) {
+    Serial.print(".");
+    // while connecting to IO LED blink every half second
+    digitalWrite(LED_BUILTIN_ESP, HIGH);   // turn the LED on (HIGH is the voltage level)
+    delay(500);                       // wait for a second
+    digitalWrite(LED_BUILTIN_ESP, LOW);    // turn the LED off by making the voltage LOW
+    delay(500);
+  }
+
+  // we are connected
+  Serial.println();
+  Serial.println(io.statusText());
+
+  // Initialize the INA219.
+  // you can call a setCalibration function to change this range (see comments).
+  if (! ina219.begin()) {
+    Serial.println("Failed to find INA219 chip");
+    // while (1) { delay(10); }
+  }
+  if (! ina219_load.begin()) {
+    Serial.println("Failed to find INA219 load chip");
+    // while (1) { delay(10); }
+  }
+  // To use a slightly lower 32V, 1A range (higher precision on amps):
+  //ina219.setCalibration_32V_1A();
+  // Or to use a lower 16V, 400mA range (higher precision on volts and amps):
+  //ina219.setCalibration_16V_400mA();
+  
 
   // Initialise wifi connection
   wifiConnected = connectWifi();
@@ -128,49 +175,20 @@ void setup() {
     digitalWrite (13,LOW);
     digitalWrite (15,LOW);
   }
-    // start the serial connection
-  Serial.begin(115200);
-  // wait for serial monitor to open
-  while(! Serial) {
-      // will pause Zero, Leonardo, etc until serial console opens
-      delay(1);
+  else {
+    // if Wifi not connected blink every 2 seconds    
+    digitalWrite(LED_BUILTIN_ESP, HIGH);   // turn the LED on (HIGH is the voltage level)
+    delay(2000);                       // wait for a second
+    digitalWrite(LED_BUILTIN_ESP, LOW);    // turn the LED off by making the voltage LOW
+    delay(2000);
   }
-  // connect to io.adafruit.com
-  Serial.print("Connecting to Adafruit IO");
-  io.connect();
-
-  // wait for a connection
-  while(io.status() < AIO_CONNECTED) {
-    Serial.print(".");
-    delay(500);
-  }
-
-  // we are connected
-  Serial.println();
-  Serial.println(io.statusText());
-
-  // Initialize the INA219.
-  // By default the initialization will use the largest range (32V, 2A).  However
-  // you can call a setCalibration function to change this range (see comments).
-  if (! ina219.begin()) {
-    Serial.println("Failed to find INA219 chip");
-    // while (1) { delay(10); }
-  }
-  if (! ina219_load.begin()) {
-    Serial.println("Failed to find INA219 load chip");
-    // while (1) { delay(10); }
-  }
-  // To use a slightly lower 32V, 1A range (higher precision on amps):
-  //ina219.setCalibration_32V_1A();
-  // Or to use a lower 16V, 400mA range (higher precision on volts and amps):
-  //ina219.setCalibration_16V_400mA();
   
   Serial.println("Measuring voltage and current with INA219 ...");
 }
 
 void loop() {
 
-    // wait 5 seconds (5000 milliseconds == 5 seconds)
+  // wait 5 seconds (5000 milliseconds == 5 seconds)
   delay(15000);
   //  delay(1000);
 
@@ -233,8 +251,7 @@ void loop() {
   Serial.println("");
 
 
-  delay(5000);
-
+  //delay(2000);
   
    if(wifiConnected){
       upnpBroadcastResponder.serverLoop();
