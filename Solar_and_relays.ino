@@ -115,6 +115,7 @@ void setup() {
   Serial.println(io.statusText());
 
   // Initialize the INA219.
+  // By default the initialization will use the largest range (32V, 2A).  However
   // you can call a setCalibration function to change this range (see comments).
   if (! ina219.begin()) {
     Serial.println("Failed to find INA219 chip");
